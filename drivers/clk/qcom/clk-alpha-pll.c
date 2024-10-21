@@ -423,7 +423,7 @@ void clk_alpha_pll_configure(struct clk_alpha_pll *pll, struct regmap *regmap,
 	if (config->main_output_mask || config->aux_output_mask ||
 		config->aux2_output_mask || config->early_output_mask ||
 		config->pre_div_val || config->vco_val ||
-		config->alpha_en_mask) {
+		config->alpha_en_mask || config->alpha_mode_mask) {
 		val = config->main_output_mask;
 		val |= config->aux_output_mask;
 		val |= config->aux2_output_mask;
@@ -431,6 +431,7 @@ void clk_alpha_pll_configure(struct clk_alpha_pll *pll, struct regmap *regmap,
 		val |= config->pre_div_val;
 		val |= config->vco_val;
 		val |= config->alpha_en_mask;
+		val |= config->alpha_mode_mask;
 
 		mask = config->main_output_mask;
 		mask |= config->aux_output_mask;
@@ -439,6 +440,7 @@ void clk_alpha_pll_configure(struct clk_alpha_pll *pll, struct regmap *regmap,
 		mask |= config->pre_div_mask;
 		mask |= config->vco_mask;
 		mask |= config->alpha_en_mask;
+		mask |= config->alpha_mode_mask;
 
 		regmap_update_bits(regmap, PLL_USER_CTL(pll), mask, val);
 	}

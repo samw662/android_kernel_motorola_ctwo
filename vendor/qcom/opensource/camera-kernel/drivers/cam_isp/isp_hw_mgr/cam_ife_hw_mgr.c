@@ -12041,7 +12041,8 @@ static int cam_sfe_packet_generic_blob_handler(void *user_data,
 
 		clock_config = (struct cam_isp_clock_config *)blob_data;
 
-		if (clock_config->num_rdi > CAM_SFE_RDI_NUM_MAX) {
+		if ((clock_config->num_rdi > CAM_SFE_RDI_NUM_MAX) ||
+			(clock_config->num_rdi == 0)) {
 			CAM_ERR(CAM_ISP, "Invalid num_rdi %u in clock config, ctx_idx: %u",
 				clock_config->num_rdi, ife_mgr_ctx->ctx_index);
 			return -EINVAL;

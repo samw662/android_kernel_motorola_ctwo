@@ -1,0 +1,105 @@
+/* Copyright (c) 2021, The Linux Foundation. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+/* This file is only for arcfox device */
+
+#include <dt-bindings/interrupt-controller/arm-gic.h>
+#include "cliffs-arcfox-products-common-overlay.dtsi"
+#include "cliffs-arcfox-haptics-overlay.dtsi"
+#include "cliffs-arcfox-fingerprint-overlay.dtsi"
+#include "cliffs-arcfox-charger-overlay.dtsi"
+#include "cliffs-moto-common-st-nfc.dtsi"
+#include "moto-arcfox-wl2868c.dtsi"
+#include "cliffs-arcfox-touchscreen-overlay.dtsi"
+#include "cliffs-arcfox-evb-sensor-overlay.dtsi"
+#include "cliffs-moto-wcn7851-s3e-overlay.dtsi"
+
+#include "cliffs-arcfox-thermal-overlay.dtsi"
+
+&soc {
+	mmi_relay {
+		compatible = "mmi,sys-relay";
+	};
+
+	lpd_mitigate: mmi,lpd-mitigate {
+		compatible = "mmi,lpd-mitigate";
+		mmi,mitigate-mode-cfg = <3>;
+		mmi,default-mitigate-mode-cfg = <1>;
+	};
+
+	pinctrl@f000000 {
+		compatible = "qcom,cliffs-pinctrl";
+		reg = <0x0F000000 0x1000000>;
+		interrupts = <GIC_SPI 208 IRQ_TYPE_LEVEL_HIGH>;
+		gpio-controller;
+		#gpio-cells = <2>;
+		interrupt-controller;
+		#interrupt-cells = <2>;
+		wakeup-parent = <&pdc>;
+		qcom,gpios-reserved = <8 9 10 11 56 57 58 59 60>;
+	};
+};
+
+&pm8550b_eusb2_repeater {
+	qcom,param-override-seq =
+		/* <value reg_offset> */
+		/* Adjust HS trasmit amplitude */
+		<0xb 0x51
+		/* Adjust HS termination resistor */
+		 0x1 0x52
+		/* Squelch detection threshold */
+		 0x2 0x54
+		/* USB2 Tx slew rate */
+		 0x3 0x55
+		/* Tx pre-emphasis tuning */
+		 0x7 0x57
+		/* HS disconnect threshold */
+		 0x4 0x53
+		/* slew rate */
+		 0x00 0x59>;
+	qcom,host-param-override-seq =
+		/* <value reg_offset> */
+		/* Adjust HS trasmit amplitude */
+		<0xd 0x51
+		/* Adjust HS termination resistor */
+		 0x6 0x52
+		/* Squelch detection threshold */
+		 0x4 0x54
+		/*USB2 Tx slew rate */
+		 0x1 0x55
+		/* Tx pre-emphasis tuning */
+		 0x5 0x57
+		/* HS disconnect threshold */
+		 0x4 0x53
+		/* slew rate */
+		 0x00 0x59>;
+};
+
+&usb0 {
+	dwc3@a600000 {
+		snps,usb2-gadget-lpm-disable;
+	};
+};
+
+&usb_qmp_dp_phy {
+	status = "disabled";
+};
+
+&usb0 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&usb3phy_portselect_gpio>;
+	gpios = <&tlmm 122 0>;
+	dwc3@a600000 {
+		usb-phy = <&eusb2_phy0>, <&usb_nop_phy>;
+		maximum-speed = "high-speed";
+	};
+};

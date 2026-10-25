@@ -1,0 +1,197 @@
+/* Copyright (c) 2021, The Linux Foundation. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+/* This file is only for ctwov device */
+
+#include "pineapple-ctwov-products-common-overlay.dtsi"
+#include "pineapple-moto-common-st-nfc.dtsi"
+#include "pineapple-moto-ctwov-qorvo-uwb.dtsi"
+#include "pineapple-ctwov-touchscreen-overlay.dtsi"
+#include "pineapple-ctwov-fingerprint-overlay.dtsi"
+#include "pineapple-ctwov-haptics-overlay.dtsi"
+#include "pineapple-ctwov-evb-sensor-overlay.dtsi"
+#include "pineapple-ctwov-charger-overlay.dtsi"
+#include "moto-ctwov-wl2868c.dtsi"
+#include "pineapple-ctwov-thermal-overlay.dtsi"
+#include <dt-bindings/regulator/qcom,rpmh-regulator-levels.h>
+#include <dt-bindings/interrupt-controller/arm-gic.h>
+
+&soc {
+	mmi_relay {
+		compatible = "mmi,sys-relay";
+	};
+
+	lpd_mitigate: mmi,lpd-mitigate {
+		compatible = "mmi,lpd-mitigate";
+		mmi,mitigate-mode-cfg = <3>;
+		mmi,default-mitigate-mode-cfg = <1>;
+	};
+
+	usb_nop_phy: usb_nop_phy {
+		compatible = "usb-nop-xceiv";
+	};
+
+	pinctrl@f000000 {
+		compatible = "qcom,pineapple-pinctrl";
+		reg = <0x0F000000 0x1000000>;
+		interrupts = <GIC_SPI 208 IRQ_TYPE_LEVEL_HIGH>;
+		gpio-controller;
+		#gpio-cells = <2>;
+		interrupt-controller;
+		#interrupt-cells = <2>;
+		wakeup-parent = <&pdc>;
+		qcom,gpios-reserved = <36 37 38 39 40 41 42 43>;
+	};
+
+};
+
+&tlmm {
+	redriver_enable: redriver_enable {
+		mux {
+			pins = "gpio9";
+			function = "gpio";
+		};
+
+		config {
+			pins = "gpio9";
+			drive-strength = <2>;
+			bias-disable; /* NO PULL */
+			output-high;
+		};
+	};
+	redriver_disable: redriver_disable {
+		mux {
+			pins = "gpio9";
+			function = "gpio";
+		};
+
+		config {
+			pins = "gpio9";
+			drive-strength = <2>;
+			output-low;
+		};
+	};
+};
+
+&qupv3_se6_i2c {
+	status = "ok";
+	#include "pineapple-moto-common-redriver.dtsi"
+};
+
+&usb_qmp_dp_phy {
+	pinctrl-names = "unused";
+};
+
+&usb0 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&usb3phy_portselect_gpio>;
+	gpios = <&tlmm 29 0>;
+	ssusb_redriver = <&redriver>;
+	qcom,wcd_usbss = <&wcd_usbss>;
+};
+
+&apps_rsc_drv2 {
+       rpmh-regulator-ldob4 {
+               compatible = "qcom,rpmh-vrm-regulator";
+               qcom,resource-name = "ldob4";
+               qcom,regulator-type = "pmic5-ldo";
+               qcom,supported-modes =
+                       <RPMH_REGULATOR_MODE_LPM
+                        RPMH_REGULATOR_MODE_HPM>;
+               qcom,mode-threshold-currents = <0 10000>;
+
+               L4B: pm_humu_l4: regulator-pm-humu-l4 {
+                       regulator-name = "pm_humu_l4";
+                       qcom,set = <RPMH_REGULATOR_SET_ALL>;
+                       regulator-min-microvolt = <1800000>;
+                       regulator-max-microvolt = <1800000>;
+                       qcom,init-voltage = <1800000>;
+                       qcom,init-mode = <RPMH_REGULATOR_MODE_HPM>;
+               };
+       };
+};
+
+&L2B {
+	regulator-min-microvolt = <3000000>;
+	regulator-max-microvolt = <3000000>;
+	qcom,init-voltage = <3000000>;
+	regulator-boot-on;
+	regulator-always-on;
+};
+
+&tlmm {
+        laser_xsdn_active: laser_xsdn_active {
+		mux {
+			pins = "gpio10";
+			function = "gpio";
+		};
+
+		config {
+			pins = "gpio10";
+			drive-strength = <2>;
+			bias-disable;
+		};
+	};
+
+	laser_xsdn_suspend: laser_xsdn_suspend {
+		mux {
+			pins = "gpio10";
+			function = "gpio";
+		};
+
+		config {
+			pins = "gpio10";
+			drive-strength = <2>;
+			bias-pull-down; /* PULL DOWN */
+		};
+	};
+
+	laser_int_active: laser_int_active {
+		mux {
+			pins = "gpio11";
+			function = "gpio";
+		};
+
+		config {
+			pins = "gpio11";
+			drive-strength = <2>;
+			bias-pull-up; /* PULL UP */
+		};
+	};
+
+	laser_int_suspend: laser_int_suspend {
+		mux {
+			pins = "gpio11";
+			function = "gpio";
+		};
+
+		config {
+			pins = "gpio11";
+			drive-strength = <2>;
+			bias-pull-down; /* PULL DOWN */
+		};
+	};
+};
+
+&qupv3_se11_i2c {
+	status = "okay";
+	stmvl53l1@29 {
+		status = "ok";
+		compatible = "st,stmvl53l1";
+		reg = <0x29>;
+		vdd-vl53l1-supply = <&L2B>;
+		gpios = <&tlmm 10 0>, <&tlmm 11 0>;
+		pinctrl-names = "laser_default", "laser_suspend";
+		pinctrl-0 = <&laser_xsdn_active &laser_int_active>;
+		pinctrl-1 = <&laser_xsdn_suspend &laser_int_suspend>;
+	};
+};

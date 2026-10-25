@@ -1,0 +1,17 @@
+/dts-v1/;
+/plugin/;
+
+#include "pineapple-arcf-device-common-overlay.dtsi"
+
+/ {
+	model = "arcf";
+	compatible = "qcom,pineapple-mtp", "qcom,pineapple", "qcom,pineapplep-mtp", "qcom,pineapplep", "qcom,mtp", "qcom,moto";
+	qcom,msm-id = <557 0x10000>, <557 0x20000>, <577 0x10000>, <577 0x20000>;
+	qcom,board-id = <0x43 0xA200>;
+};
+
+&ufshc_mem {
+        limit-tx-hs-gear = <4>;
+        limit-rx-hs-gear = <4>;
+        limit-rate = <1>; /* HS Rate-A */
+};

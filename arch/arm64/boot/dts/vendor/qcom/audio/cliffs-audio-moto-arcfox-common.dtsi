@@ -1,0 +1,184 @@
+/* This is original from cliffs-audio-mtp.dtsi */
+
+#include "cliffs-audio-overlay.dtsi"
+
+&wcd_usbss {
+	status = "disabled";
+};
+
+&wcd_rst_gpio {
+	status = "disabled";
+};
+
+&wcd937x_codec {
+	status = "disabled";
+};
+
+&wcd937x_tx_slave {
+	status = "disabled";
+};
+
+&wcd937x_rx_slave {
+	status = "disabled";
+};
+
+&wcd939x_codec {
+	status = "disabled";
+};
+
+&wcd939x_tx_slave {
+	status = "disabled";
+};
+
+&wcd939x_rx_slave {
+	status = "disabled";
+};
+
+&fm_i2s1_gpios {
+	status = "disabled";
+};
+
+&swr_haptics {
+	status = "ok";
+};
+
+&wsa_macro {
+	qcom,wsa-bat-cfgs= <1>, <1>;
+	qcom,wsa-system-gains= <1 9>, <1 9>;
+};
+
+&wsa884x_0220 {
+	qcom,boost_voltage_11v;
+};
+
+&pineapple_snd {
+	qcom,model = "cliffs-mtp-snd-card";
+	qcom,mi2s-audio-intf = <0>;
+	qcom,wcd-disabled = <1>;
+	qcom,audio-routing =
+		"TX DMIC0", "Digital Mic0",
+		"TX DMIC1", "Digital Mic1",
+		"TX DMIC2", "Digital Mic2",
+		"TX DMIC3", "Digital Mic3",
+		"TX DMIC4", "Digital Mic4",
+		"TX DMIC5", "Digital Mic5",
+		"TX DMIC6", "Digital Mic6",
+		"TX DMIC7", "Digital Mic7",
+		"HAP_IN", "PCM_OUT",
+		"WSA SRC0_INP", "SRC0",
+		"WSA_TX DEC0_INP", "TX DEC0 MUX",
+		"WSA_TX DEC1_INP", "TX DEC1 MUX",
+		"RX_TX DEC0_INP", "TX DEC0 MUX",
+		"RX_TX DEC1_INP", "TX DEC1 MUX",
+		"RX_TX DEC2_INP", "TX DEC2 MUX",
+		"RX_TX DEC3_INP", "TX DEC3 MUX",
+		"SpkrLeft IN", "WSA_SPK1 OUT",
+		"SpkrRight IN", "WSA_SPK2 OUT",
+		"VA SWR_INPUT", "VA_SWR_CLK",
+		"VA_AIF1 CAP", "VA_SWR_CLK",
+		"VA_AIF2 CAP", "VA_SWR_CLK",
+		"VA_AIF3 CAP", "VA_SWR_CLK",
+		"VA DMIC0", "Digital Mic0",
+		"VA DMIC1", "Digital Mic1",
+		"VA DMIC2", "Digital Mic2",
+		"VA DMIC3", "Digital Mic3",
+		"VA DMIC4", "Digital Mic4",
+		"VA DMIC5", "Digital Mic5",
+		"VA DMIC6", "Digital Mic6",
+		"VA DMIC7", "Digital Mic7";
+	asoc-codec  = <&stub_codec>, <&lpass_cdc>,
+			<&swr_haptics>,
+			<&wsa884x_0220>, <&wsa884x_0221>;
+	asoc-codec-names = "msm-stub-codec.1", "lpass-cdc",
+			"swr-haptics",
+			"wsa-codec1", "wsa-codec2";
+	qcom,dmic-micbias-en-gpio = <&micbias_en_gpio>;
+	qcom,msm-mbhc-usbc-audio-supported = <0>;
+	qcom,msm-mbhc-hphl-swh = <0>;
+	qcom,msm-mbhc-gnd-swh = <0>;
+};
+
+&spf_core_platform  {
+	micbias_en_gpio: micbias_en_pinctrl {
+		compatible = "qcom,msm-cdc-pinctrl";
+		pinctrl-names = "aud_active", "aud_sleep";
+		pinctrl-0 = <&cdc_micbias_en_active>;
+		pinctrl-1 = <&cdc_micbias_en_sleep>;
+		#gpio-cells = <0>;
+	};
+};
+
+&tlmm {
+	cdc_micbias_en_active: micbias_en_active {
+		mux {
+			pins = "gpio119";
+			function = "func1";
+		};
+
+		config {
+			pins = "gpio119";
+			drive-strength = <8>;
+			output-high;
+		};
+	};
+
+	cdc_micbias_en_sleep: micbias_en_sleep {
+		mux {
+			pins = "gpio119";
+			function = "func1";
+		};
+
+		config {
+			pins = "gpio119";
+			drive-strength = <2>;
+			bias-disable;
+			output-low;
+		};
+	};
+};
+
+&rx_swr_gpios {
+	pinctrl-0 = <&rx_swr_clk_active &rx_swr_data_active>;
+	pinctrl-1 = <&rx_swr_clk_sleep &rx_swr_data_sleep>;
+};
+
+&lpi_tlmm {
+	/* WSA speaker - north reset pins */
+	spkr_1_sd_n {
+		spkr_1_sd_n_sleep {
+			mux {
+				pins = "gpio5";
+			};
+			config {
+				pins = "gpio5";
+			};
+		};
+
+		spkr_1_sd_n_active {
+			mux {
+				pins = "gpio5";
+			};
+			config {
+				pins = "gpio5";
+			};
+		};
+	};
+};
+
+&spkr_2_sd_n_sleep {
+	mux {
+		pins = "gpio76";
+	};
+	config {
+		pins = "gpio76";
+	};
+};
+
+&spkr_2_sd_n_active {
+	mux {
+		pins = "gpio76";
+	};
+	config {
+		pins = "gpio76";
+	};
+};

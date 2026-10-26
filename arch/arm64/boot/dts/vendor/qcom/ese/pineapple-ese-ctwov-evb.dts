@@ -1,0 +1,13 @@
+/* this is derivated from qcom pineapple-ese-mtp.dts*/
+
+/dts-v1/;
+/plugin/;
+
+#include "pineapple-ese-ctwov-common.dtsi"
+
+/ {
+	model = "ctwov";
+	compatible = "qcom,pineapple-mtp", "qcom,pineapple", "qcom,mtp", "mot,ctwov";
+	qcom,msm-id = <557 0x10000>, <557 0x20000>, <577 0x10000>, <577 0x20000>;
+	qcom,board-id = <0x41 0x9000>;
+};

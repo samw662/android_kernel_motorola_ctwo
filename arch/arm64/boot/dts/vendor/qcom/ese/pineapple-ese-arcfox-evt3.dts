@@ -1,0 +1,14 @@
+/* this is derivated from qcom pineapple-ese-mtp.dts*/
+
+/dts-v1/;
+/plugin/;
+
+#include "pineapple-ese-arcfox-common.dtsi"
+
+#define ARCFOX_RADIO_JP 4
+/ {
+	model = "arcfox";
+	compatible = "qcom,pineapple-mtp", "qcom,pineapple", "qcom,mtp";
+	qcom,msm-id = <557 0x10000>;
+	qcom,board-id = <0x43 0xA300>, <(ARCFOX_RADIO_JP<<8 | 0x43) 0xA000>;
+};

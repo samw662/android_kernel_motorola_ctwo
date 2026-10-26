@@ -1,0 +1,11 @@
+/* this is derivated from qcom pineapple-ese-common.dtsi*/
+
+&soc {
+	st54spi_gpio {
+		status = "ok";
+		compatible = "st,st54spi_gpio";
+		/* gpio used as SE_nRESET */
+		gpio-power_nreset = <&tlmm 111 0x00>;
+	};
+};
+

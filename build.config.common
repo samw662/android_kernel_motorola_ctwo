@@ -6,7 +6,11 @@ LLVM=1
 DEPMOD=depmod
 CLANG_PREBUILT_BIN=prebuilts/clang/host/linux-x86/clang-${CLANG_VERSION}/bin
 BUILDTOOLS_PREBUILT_BIN=build/kernel/build-tools/path/linux-x86
-DTC=${ROOT_DIR}/${BUILDTOOLS_PREBUILT_BIN}/dtc
+if [ -n "${BUILDING_WITH_BAZEL:-}" ]; then
+	DTC=${ROOT_DIR}/prebuilts/kernel-build-tools/linux-x86/bin/dtc
+else
+	DTC=${ROOT_DIR}/${BUILDTOOLS_PREBUILT_BIN}/dtc
+fi
 
 KCFLAGS="${KCFLAGS} -D__ANDROID_COMMON_KERNEL__"
 EXTRA_CMDS=''

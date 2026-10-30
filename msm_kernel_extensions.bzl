@@ -31,7 +31,7 @@ def get_dtbo_list(target):
     return _get_dtbo_list(target)
 
 def get_dtstree(target):
-    return "//msm-kernel/arch/arm64/boot/dts/vendor:msm_dt"
+    return "//msm-kernel/arch/arm64/boot/dts:arm64_dt"
 
 def get_vendor_ramdisk_binaries(target, flavor = None):
     return None

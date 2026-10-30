@@ -1,0 +1,16 @@
+load("//build/kernel/kleaf:kernel.bzl", "kernel_dtstree")
+
+kernel_dtstree(
+    name = "arm64_dt",
+    srcs = glob(
+        ["**"],
+        exclude = [
+            "**/BUILD",
+            "**/BUILD.bazel",
+            "**/*.bazel",
+            "**/*.bzl",
+        ],
+    ) + ["//msm-kernel/arch/arm64/boot/dts/vendor:all_dt_sources"],
+    makefile = "Makefile",
+    visibility = ["//visibility:public"],
+)

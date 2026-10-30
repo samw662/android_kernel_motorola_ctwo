@@ -1,5 +1,19 @@
 load("//build/kernel/kleaf:kernel.bzl", "kernel_dtstree")
 
+filegroup(
+    name = "all_dt_sources",
+    srcs = glob(
+        ["**"],
+        exclude = [
+            "**/BUILD",
+            "**/BUILD.bazel",
+            "**/*.bazel",
+            "**/*.bzl",
+        ],
+    ),
+    visibility = ["//visibility:public"],
+)
+
 kernel_dtstree(
     name = "msm_dt",
     srcs = glob(

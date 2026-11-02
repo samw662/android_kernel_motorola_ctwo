@@ -28,6 +28,8 @@ DATA_IPA_INC ?= $(WLAN_ROOT)/../dataipa/drivers/platform/msm/include
 DATA_IPA_UAPI_INC ?= $(DATA_IPA_INC)/uapi
 
 ifeq ($(KERNEL_BUILD), n)
+# Android/Linux build-top paths are only needed for a relative WLAN_ROOT.
+ifeq ($(filter /%,$(WLAN_ROOT)),)
 ifneq ($(ANDROID_BUILD_TOP),)
       ANDROID_BUILD_TOP_REL := $(shell python -c "import os.path; print(os.path.relpath('$(ANDROID_BUILD_TOP)'))")
       override WLAN_ROOT := $(ANDROID_BUILD_TOP_REL)/$(WLAN_ROOT)
@@ -40,6 +42,7 @@ else ifneq ($(LINUX_BUILD_TOP),)
       override WLAN_COMMON_ROOT ?= cmn
       override WLAN_COMMON_INC ?= $(WLAN_ROOT)/$(WLAN_COMMON_ROOT)
       override WLAN_FW_API := $(WLAN_ROOT)/../fw-api
+endif
 endif
 endif
 

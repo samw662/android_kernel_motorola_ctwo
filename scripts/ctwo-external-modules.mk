@@ -58,3 +58,82 @@ rmnet-mem: check-inputs
 
 rmnet-sch: check-inputs
 	+$(MAKE) -C $(KERNEL_SRC) $(KBUILD_ARGS) M=$(VENDOR)/datarmnet-ext/sch modules
+
+.PHONY: b2-bm-adsp-ulog
+b2-bm-adsp-ulog: check-inputs
+	+$(MAKE) -C $(KERNEL_SRC) $(KBUILD_ARGS) M=drivers/power/bm_adsp_ulog modules
+
+.PHONY: b2-goodix-fod
+b2-goodix-fod: check-inputs
+	+$(MAKE) -C $(KERNEL_SRC) $(KBUILD_ARGS) M=drivers/input/misc/goodix_fod_mmi modules
+
+.PHONY: b2-mmi-annotate
+b2-mmi-annotate: check-inputs
+	+$(MAKE) -C $(KERNEL_SRC) $(KBUILD_ARGS) M=drivers/mmi_annotate modules
+
+.PHONY: b2-mmi-info
+b2-mmi-info: b2-mmi-annotate
+	+$(MAKE) -C $(KERNEL_SRC) $(KBUILD_ARGS) M=drivers/mmi_info KBUILD_EXTRA_SYMBOLS=$(KERNEL_OUT)/drivers/mmi_annotate/Module.symvers modules
+
+.PHONY: b2-mmi-relay
+b2-mmi-relay: check-inputs
+	+$(MAKE) -C $(KERNEL_SRC) $(KBUILD_ARGS) M=drivers/mmi_relay modules
+
+.PHONY: b2-mmi-sys-temp
+b2-mmi-sys-temp: check-inputs
+	+$(MAKE) -C $(KERNEL_SRC) $(KBUILD_ARGS) M=drivers/misc/mmi_sys_temp modules
+
+.PHONY: b2-moto-usbnet
+b2-moto-usbnet: check-inputs
+	+$(MAKE) -C $(KERNEL_SRC) $(KBUILD_ARGS) M=drivers/moto_f_usbnet modules
+
+.PHONY: b2-moto-reboot
+b2-moto-reboot: check-inputs
+	+$(MAKE) -C $(KERNEL_SRC) $(KBUILD_ARGS) M=drivers/moto_reboot_reason modules
+
+.PHONY: b2-moto-sched
+b2-moto-sched: check-inputs
+	+$(MAKE) -C $(KERNEL_SRC) $(KBUILD_ARGS) M=drivers/moto_sched modules
+
+.PHONY: b2-sensors-class
+b2-sensors-class: check-inputs
+	+$(MAKE) -C $(KERNEL_SRC) $(KBUILD_ARGS) M=drivers/sensors modules
+
+.PHONY: b2-st54spi
+b2-st54spi: check-inputs
+	+$(MAKE) -C $(KERNEL_SRC) $(KBUILD_ARGS) M=drivers/ese/st54spi_gpio modules
+
+.PHONY: b2-stmvl53l3
+b2-stmvl53l3: check-inputs
+	+$(MAKE) -C $(KERNEL_SRC) $(KBUILD_ARGS) M=drivers/input/misc/vl53L1_14_1_2 modules
+
+.PHONY: b2-watchdogtest
+b2-watchdogtest: check-inputs
+	+$(MAKE) -C $(KERNEL_SRC) $(KBUILD_ARGS) M=drivers/watchdogtest modules
+
+.PHONY: b2-wl2868c
+b2-wl2868c: check-inputs
+	+$(MAKE) -C $(KERNEL_SRC) $(KBUILD_ARGS) M=drivers/regulator/wl2868c modules
+
+.PHONY: b2-ubwcp
+b2-ubwcp: check-inputs
+	+$(MAKE) -C $(KERNEL_SRC) $(KBUILD_ARGS) M=vendor/qcom/opensource/mm-sys-kernel/ubwcp modules
+
+.PHONY: b2-camera
+b2-camera: check-inputs
+	@mkdir -p $(KERNEL_OUT)/$(VENDOR)/camera-kernel
+	@printf '#define CAMERA_COMPILE_TIME "%s"\n#define CAMERA_COMPILE_BY "%s"\n#define CAMERA_COMPILE_HOST "%s"\n' "$$(date)" "$$(whoami)" "$$(uname -n)" > $(KERNEL_OUT)/$(VENDOR)/camera-kernel/cam_generated_h
+	+$(MAKE) -C $(KERNEL_SRC) $(KBUILD_ARGS) M=$(VENDOR)/camera-kernel \
+	  CAMERA_KERNEL_ROOT=$(KERNEL_SRC)/$(VENDOR)/camera-kernel KERNEL_ROOT=$(KERNEL_SRC) MODNAME=camera TARGET_SYNX_ENABLE=y BOARD_PLATFORM=pineapple \
+	  'KBUILD_EXTRA_SYMBOLS=$(KERNEL_OUT)/$(VENDOR)/mmrm-driver/Module.symvers $(KERNEL_OUT)/$(VENDOR)/synx-kernel/Module.symvers $(KERNEL_OUT)/$(VENDOR)/securemsm-kernel/Module.symvers' modules
+
+.PHONY: b2-display
+b2-display: check-inputs
+	+$(MAKE) -C $(KERNEL_SRC) $(KBUILD_ARGS) M=$(VENDOR)/display-drivers \
+	  DISPLAY_ROOT=$(KERNEL_SRC)/$(VENDOR)/display-drivers KERNEL_ROOT=$(KERNEL_SRC) CONFIG_DRM_MSM=m MODNAME=msm_drm BOARD_PLATFORM=pineapple \
+	  'KBUILD_EXTRA_SYMBOLS=$(KERNEL_OUT)/$(VENDOR)/mmrm-driver/Module.symvers $(KERNEL_OUT)/$(VENDOR)/mm-drivers/hw_fence/Module.symvers $(KERNEL_OUT)/$(VENDOR)/mm-drivers/sync_fence/Module.symvers $(KERNEL_OUT)/$(VENDOR)/mm-drivers/msm_ext_display/Module.symvers $(KERNEL_OUT)/$(VENDOR)/securemsm-kernel/Module.symvers' modules
+
+.PHONY: b2-dataipa
+b2-dataipa: check-inputs
+	+$(MAKE) -C $(KERNEL_SRC) $(KBUILD_ARGS) M=$(VENDOR)/dataipa CONFIG_IPA_KERNEL_TESTS_MODULE=n \
+	  KBUILD_EXTRA_SYMBOLS=$(KERNEL_OUT)/$(VENDOR)/datarmnet-ext/mem/Module.symvers modules

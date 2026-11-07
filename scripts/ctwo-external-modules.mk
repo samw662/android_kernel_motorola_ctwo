@@ -193,3 +193,19 @@ b3-adaptive-charge: b3-mmi-charger
 .PHONY: b3-lpd-mitigate
 b3-lpd-mitigate: b3-qti-charger
 	+$(MAKE) -C $(KERNEL_SRC) $(KBUILD_ARGS) M=drivers/power/mmi_lpd_mitigate 'KBUILD_EXTRA_SYMBOLS=$(KERNEL_OUT)/drivers/power/qti_glink_charger/Module.symvers $(KERNEL_OUT)/drivers/mmi_relay/Module.symvers' modules
+
+.PHONY: b3-con-dfpar
+b3-con-dfpar: check-inputs
+	+$(MAKE) -C $(KERNEL_SRC) $(KBUILD_ARGS) M=drivers/moto_con_dfpar modules
+
+.PHONY: b3-mmap-fault
+b3-mmap-fault: check-inputs
+	+$(MAKE) -C $(KERNEL_SRC) $(KBUILD_ARGS) M=drivers/moto_mmap_fault modules
+
+.PHONY: b3-moto-swap
+b3-moto-swap: check-inputs
+	+$(MAKE) -C $(KERNEL_SRC) $(KBUILD_ARGS) M=drivers/moto_swap CONFIG_HYBRIDSWAP_ZRAM=y CONFIG_HYBRIDSWAP=y CONFIG_HYBRIDSWAP_SWAPD=y CONFIG_HYBRIDSWAP_CORE=y modules
+
+.PHONY: b3-utags
+b3-utags: check-inputs
+	+$(MAKE) -C $(KERNEL_SRC) $(KBUILD_ARGS) M=drivers/misc/utag modules

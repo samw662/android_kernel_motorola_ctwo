@@ -137,3 +137,7 @@ b2-display: check-inputs
 b2-dataipa: check-inputs
 	+$(MAKE) -C $(KERNEL_SRC) $(KBUILD_ARGS) M=$(VENDOR)/dataipa CONFIG_IPA_KERNEL_TESTS_MODULE=n \
 	  KBUILD_EXTRA_SYMBOLS=$(KERNEL_OUT)/$(VENDOR)/datarmnet-ext/mem/Module.symvers modules
+
+.PHONY: b3-bluetooth
+b3-bluetooth: check-inputs
+	+$(MAKE) -C $(KERNEL_SRC) $(KBUILD_ARGS) M=$(VENDOR)/bt-kernel BT_ROOT=$(KERNEL_SRC)/$(VENDOR)/bt-kernel BT_KERNEL_ROOT=$(KERNEL_SRC)/$(VENDOR)/bt-kernel CONFIG_MSM_BT_POWER=m CONFIG_BTFM_SLIM=m CONFIG_BT_HW_SECURE_DISABLE=y BOARD_PLATFORM=pineapple KBUILD_EXTRA_SYMBOLS=$(KERNEL_OUT)/$(VENDOR)/securemsm-kernel/Module.symvers modules

@@ -141,3 +141,7 @@ b2-dataipa: check-inputs
 .PHONY: b3-bluetooth
 b3-bluetooth: check-inputs
 	+$(MAKE) -C $(KERNEL_SRC) $(KBUILD_ARGS) M=$(VENDOR)/bt-kernel BT_ROOT=$(KERNEL_SRC)/$(VENDOR)/bt-kernel BT_KERNEL_ROOT=$(KERNEL_SRC)/$(VENDOR)/bt-kernel CONFIG_MSM_BT_POWER=m CONFIG_BTFM_SLIM=m CONFIG_BT_HW_SECURE_DISABLE=y BOARD_PLATFORM=pineapple KBUILD_EXTRA_SYMBOLS=$(KERNEL_OUT)/$(VENDOR)/securemsm-kernel/Module.symvers modules
+
+.PHONY: b3-video
+b3-video: check-inputs
+	+$(MAKE) -C $(KERNEL_SRC) $(KBUILD_ARGS) M=$(VENDOR)/video-driver/msm_video VIDEO_ROOT=$(KERNEL_SRC)/$(VENDOR)/video-driver CONFIG_MSM_VIDC_V4L2=m 'KBUILD_EXTRA_SYMBOLS=$(KERNEL_OUT)/$(VENDOR)/mmrm-driver/Module.symvers $(KERNEL_OUT)/$(VENDOR)/mm-drivers/hw_fence/Module.symvers' modules

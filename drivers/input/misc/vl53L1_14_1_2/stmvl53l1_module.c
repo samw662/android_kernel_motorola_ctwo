@@ -2617,6 +2617,7 @@ static int ctrl_mz_data_blocking_common(struct stmvl53l1_data *data,
 		kill_mz_data(&data->meas.multi_range_data);
 		rc0 = copy_to_user(&d->data, &data->meas.multi_range_data,
 			sizeof(VL53L1_MultiRangingData_t));
+		(void)rc0;
 		goto done;
 	}
 #ifdef PHIO_TIMEOUT_FIX

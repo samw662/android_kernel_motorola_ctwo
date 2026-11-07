@@ -177,3 +177,19 @@ b3-rmnet-shs: b3-rmnet-core
 .PHONY: b3-rmnet-wlan
 b3-rmnet-wlan: b3-rmnet-core
 	+$(MAKE) -C $(KERNEL_SRC) $(KBUILD_ARGS) M=$(VENDOR)/datarmnet-ext/wlan RMNET_CORE_INC_DIR=$(KERNEL_SRC)/$(VENDOR)/datarmnet/core KBUILD_EXTRA_SYMBOLS=$(KERNEL_OUT)/$(VENDOR)/datarmnet/core/Module.symvers modules
+
+.PHONY: b3-mmi-charger
+b3-mmi-charger: check-inputs
+	+$(MAKE) -C $(KERNEL_SRC) $(KBUILD_ARGS) M=drivers/power/mmi_charger KBUILD_EXTRA_SYMBOLS=$(KERNEL_OUT)/drivers/mmi_info/Module.symvers modules
+
+.PHONY: b3-qti-charger
+b3-qti-charger: b3-mmi-charger
+	+$(MAKE) -C $(KERNEL_SRC) $(KBUILD_ARGS) M=drivers/power/qti_glink_charger 'KBUILD_EXTRA_SYMBOLS=$(KERNEL_OUT)/drivers/power/mmi_charger/Module.symvers $(KERNEL_OUT)/drivers/power/bm_adsp_ulog/Module.symvers' modules
+
+.PHONY: b3-adaptive-charge
+b3-adaptive-charge: b3-mmi-charger
+	+$(MAKE) -C $(KERNEL_SRC) $(KBUILD_ARGS) M=drivers/power/qpnp_adaptive_charge CONFIG_USE_MMI_CHARGER=y KBUILD_EXTRA_SYMBOLS=$(KERNEL_OUT)/drivers/power/mmi_charger/Module.symvers modules
+
+.PHONY: b3-lpd-mitigate
+b3-lpd-mitigate: b3-qti-charger
+	+$(MAKE) -C $(KERNEL_SRC) $(KBUILD_ARGS) M=drivers/power/mmi_lpd_mitigate 'KBUILD_EXTRA_SYMBOLS=$(KERNEL_OUT)/drivers/power/qti_glink_charger/Module.symvers $(KERNEL_OUT)/drivers/mmi_relay/Module.symvers' modules

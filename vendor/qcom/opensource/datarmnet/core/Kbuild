@@ -2,6 +2,14 @@ ifneq (, $(filter y, $(CONFIG_ARCH_PINEAPPLE) $(CONFIG_ARCH_BLAIR) $(CONFIG_ARCH
 ccflags-y	+= -DRMNET_LA_PLATFORM
 endif
 
+ifeq ($(CONFIG_ARCH_PINEAPPLE),y)
+ccflags-y += -I$(srctree)/vendor/qcom/opensource/datarmnet-ext/mem
+ccflags-y += -I$(srctree)/vendor/qcom/opensource/dataipa/drivers/platform/msm/include
+ccflags-y += -I$(srctree)/vendor/qcom/opensource/dataipa/drivers/platform/msm/include/uapi
+ccflags-y += -DCONFIG_RMNET_LA_PLATFORM
+ccflags-y += -DRMNET_TRACE_INCLUDE_PATH=$(srctree)/vendor/qcom/opensource/datarmnet/core
+endif
+
 obj-m += rmnet_core.o
 
 #core sources

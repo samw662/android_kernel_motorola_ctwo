@@ -149,3 +149,31 @@ b3-video: check-inputs
 .PHONY: b3-eva
 b3-eva: check-inputs
 	+$(MAKE) -C $(KERNEL_SRC) $(KBUILD_ARGS) M=$(VENDOR)/eva-kernel EVA_ROOT=$(KERNEL_SRC)/$(VENDOR)/eva-kernel BOARD_PLATFORM=pineapple 'KBUILD_EXTRA_SYMBOLS=$(KERNEL_OUT)/$(VENDOR)/mmrm-driver/Module.symvers $(KERNEL_OUT)/$(VENDOR)/synx-kernel/Module.symvers $(KERNEL_OUT)/$(VENDOR)/dsp-kernel/Module.symvers' modules
+
+.PHONY: b3-rmnet-core
+b3-rmnet-core: check-inputs
+	+$(MAKE) -C $(KERNEL_SRC) $(KBUILD_ARGS) M=$(VENDOR)/datarmnet/core 'KBUILD_EXTRA_SYMBOLS=$(KERNEL_OUT)/$(VENDOR)/dataipa/Module.symvers $(KERNEL_OUT)/$(VENDOR)/datarmnet-ext/mem/Module.symvers' modules
+
+.PHONY: b3-rmnet-aps
+b3-rmnet-aps: b3-rmnet-core
+	+$(MAKE) -C $(KERNEL_SRC) $(KBUILD_ARGS) M=$(VENDOR)/datarmnet-ext/aps RMNET_CORE_INC_DIR=$(KERNEL_SRC)/$(VENDOR)/datarmnet/core KBUILD_EXTRA_SYMBOLS=$(KERNEL_OUT)/$(VENDOR)/datarmnet/core/Module.symvers modules
+
+.PHONY: b3-rmnet-offload
+b3-rmnet-offload: b3-rmnet-core
+	+$(MAKE) -C $(KERNEL_SRC) $(KBUILD_ARGS) M=$(VENDOR)/datarmnet-ext/offload RMNET_CORE_INC_DIR=$(KERNEL_SRC)/$(VENDOR)/datarmnet/core KBUILD_EXTRA_SYMBOLS=$(KERNEL_OUT)/$(VENDOR)/datarmnet/core/Module.symvers modules
+
+.PHONY: b3-rmnet-perf
+b3-rmnet-perf: b3-rmnet-core
+	+$(MAKE) -C $(KERNEL_SRC) $(KBUILD_ARGS) M=$(VENDOR)/datarmnet-ext/perf RMNET_CORE_INC_DIR=$(KERNEL_SRC)/$(VENDOR)/datarmnet/core KBUILD_EXTRA_SYMBOLS=$(KERNEL_OUT)/$(VENDOR)/datarmnet/core/Module.symvers modules
+
+.PHONY: b3-rmnet-perf-tether
+b3-rmnet-perf-tether: b3-rmnet-core
+	+$(MAKE) -C $(KERNEL_SRC) $(KBUILD_ARGS) M=$(VENDOR)/datarmnet-ext/perf_tether RMNET_CORE_INC_DIR=$(KERNEL_SRC)/$(VENDOR)/datarmnet/core KBUILD_EXTRA_SYMBOLS=$(KERNEL_OUT)/$(VENDOR)/datarmnet/core/Module.symvers modules
+
+.PHONY: b3-rmnet-shs
+b3-rmnet-shs: b3-rmnet-core
+	+$(MAKE) -C $(KERNEL_SRC) $(KBUILD_ARGS) M=$(VENDOR)/datarmnet-ext/shs RMNET_CORE_INC_DIR=$(KERNEL_SRC)/$(VENDOR)/datarmnet/core KBUILD_EXTRA_SYMBOLS=$(KERNEL_OUT)/$(VENDOR)/datarmnet/core/Module.symvers modules
+
+.PHONY: b3-rmnet-wlan
+b3-rmnet-wlan: b3-rmnet-core
+	+$(MAKE) -C $(KERNEL_SRC) $(KBUILD_ARGS) M=$(VENDOR)/datarmnet-ext/wlan RMNET_CORE_INC_DIR=$(KERNEL_SRC)/$(VENDOR)/datarmnet/core KBUILD_EXTRA_SYMBOLS=$(KERNEL_OUT)/$(VENDOR)/datarmnet/core/Module.symvers modules

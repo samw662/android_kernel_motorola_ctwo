@@ -145,3 +145,7 @@ b3-bluetooth: check-inputs
 .PHONY: b3-video
 b3-video: check-inputs
 	+$(MAKE) -C $(KERNEL_SRC) $(KBUILD_ARGS) M=$(VENDOR)/video-driver/msm_video VIDEO_ROOT=$(KERNEL_SRC)/$(VENDOR)/video-driver CONFIG_MSM_VIDC_V4L2=m 'KBUILD_EXTRA_SYMBOLS=$(KERNEL_OUT)/$(VENDOR)/mmrm-driver/Module.symvers $(KERNEL_OUT)/$(VENDOR)/mm-drivers/hw_fence/Module.symvers' modules
+
+.PHONY: b3-eva
+b3-eva: check-inputs
+	+$(MAKE) -C $(KERNEL_SRC) $(KBUILD_ARGS) M=$(VENDOR)/eva-kernel EVA_ROOT=$(KERNEL_SRC)/$(VENDOR)/eva-kernel BOARD_PLATFORM=pineapple 'KBUILD_EXTRA_SYMBOLS=$(KERNEL_OUT)/$(VENDOR)/mmrm-driver/Module.symvers $(KERNEL_OUT)/$(VENDOR)/synx-kernel/Module.symvers $(KERNEL_OUT)/$(VENDOR)/dsp-kernel/Module.symvers' modules

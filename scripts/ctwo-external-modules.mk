@@ -250,3 +250,8 @@ b5-st21nfc: b2-mmi-info
 b5-sx937x: b2-sensors-class
 	+$(MAKE) -C $(KERNEL_SRC) $(KBUILD_ARGS) M=drivers/misc/sx937x_multi \
 	  KBUILD_EXTRA_SYMBOLS=$(KERNEL_OUT)/drivers/sensors/Module.symvers modules
+
+.PHONY: b5-qm35
+b5-qm35: b2-mmi-info
+	+$(MAKE) -C $(KERNEL_SRC) $(KBUILD_ARGS) M=drivers/uwb/qm35 \
+	  KBUILD_EXTRA_SYMBOLS=$(KERNEL_OUT)/drivers/mmi_info/Module.symvers modules

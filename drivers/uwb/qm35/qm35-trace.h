@@ -122,7 +122,7 @@ TRACE_EVENT(hsspi_spi_xfer,
 
 /* This part must be outside protection */
 #undef TRACE_INCLUDE_PATH
-#define TRACE_INCLUDE_PATH ../../../../motorola/kernel/modules/drivers/uwb/qm35
+#define TRACE_INCLUDE_PATH .
 // clang-format off
 #define TRACE_INCLUDE_FILE qm35-trace
 // clang-format on

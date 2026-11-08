@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: GPL-2.0-only
 
 ifeq ($(DISPLAY_ROOT),)
-DISPLAY_ROOT=$(srctree)/techpack/display
+DISPLAY_ROOT=$(if $(wildcard $(srctree)/vendor/qcom/opensource/display-drivers/msm/Kbuild),$(srctree)/vendor/qcom/opensource/display-drivers,$(srctree)/techpack/display)
 endif
 
 LINUXINCLUDE    += \

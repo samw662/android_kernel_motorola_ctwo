@@ -255,3 +255,10 @@ b5-sx937x: b2-sensors-class
 b5-qm35: b2-mmi-info
 	+$(MAKE) -C $(KERNEL_SRC) $(KBUILD_ARGS) M=drivers/uwb/qm35 \
 	  KBUILD_EXTRA_SYMBOLS=$(KERNEL_OUT)/drivers/mmi_info/Module.symvers modules
+
+.PHONY: nxp-nci
+nxp-nci: securemsm
+	+$(MAKE) -C $(KERNEL_SRC) $(KBUILD_ARGS) M=vendor/nxp/opensource/driver \
+	  NFC_ROOT=$(KERNEL_SRC)/vendor/nxp/opensource/driver \
+	  'KCFLAGS=-D__ANDROID_COMMON_KERNEL__ -DNFC_SECURE_PERIPHERAL_ENABLED' \
+	  KBUILD_EXTRA_SYMBOLS=$(KERNEL_OUT)/$(VENDOR)/securemsm-kernel/Module.symvers modules

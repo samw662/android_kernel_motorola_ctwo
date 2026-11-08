@@ -231,3 +231,22 @@ b5-audio: ext-display
 	  CONFIG_SND_SOC_WCD_MBHC=m CONFIG_SND_SWR_HAPTICS=m CONFIG_SND_SOC_MSM_STUB=m \
 	  CONFIG_SND_SOC_MSM_HDMI_CODEC_RX=m CONFIG_SND_SOC_SWR_DMIC=m \
 	  KBUILD_EXTRA_SYMBOLS=$(KERNEL_OUT)/$(VENDOR)/mm-drivers/msm_ext_display/Module.symvers modules
+
+.PHONY: b5-touchscreen b5-goodix b5-st21nfc b5-sx937x
+b5-touchscreen: b2-sensors-class b2-mmi-relay
+	+$(MAKE) -C $(KERNEL_SRC) $(KBUILD_ARGS) M=drivers/input/touchscreen/touchscreen_mmi \
+	  CONFIG_DRM_PANEL_EVENT_NOTIFICATIONS=m \
+	  'KBUILD_EXTRA_SYMBOLS=$(KERNEL_OUT)/drivers/sensors/Module.symvers $(KERNEL_OUT)/drivers/mmi_relay/Module.symvers' modules
+
+b5-goodix: b5-touchscreen b2-mmi-info
+	+$(MAKE) -C $(KERNEL_SRC) $(KBUILD_ARGS) M=drivers/input/touchscreen/goodix_berlin_mmi \
+	  CONFIG_DRM_PANEL_EVENT_NOTIFICATIONS=m CONFIG_INPUT_TOUCHSCREEN_MMI=m \
+	  'KBUILD_EXTRA_SYMBOLS=$(KERNEL_OUT)/drivers/mmi_info/Module.symvers $(KERNEL_OUT)/drivers/input/touchscreen/touchscreen_mmi/Module.symvers' modules
+
+b5-st21nfc: b2-mmi-info
+	+$(MAKE) -C $(KERNEL_SRC) $(KBUILD_ARGS) M=drivers/nfc/st21nfc TARGET_PRODUCT=ctwo \
+	  KBUILD_EXTRA_SYMBOLS=$(KERNEL_OUT)/drivers/mmi_info/Module.symvers modules
+
+b5-sx937x: b2-sensors-class
+	+$(MAKE) -C $(KERNEL_SRC) $(KBUILD_ARGS) M=drivers/misc/sx937x_multi \
+	  KBUILD_EXTRA_SYMBOLS=$(KERNEL_OUT)/drivers/sensors/Module.symvers modules

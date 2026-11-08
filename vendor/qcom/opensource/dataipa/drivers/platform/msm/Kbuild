@@ -23,18 +23,18 @@ LINUXINCLUDE    += -include $(DATAIPA_VENDOR_ROOT)/config/dataipa_vendor.h
 include $(DATAIPA_VENDOR_ROOT)/config/dataipa_GKI.conf
 LINUXINCLUDE += -I$(DATAIPA_VENDOR_ROOT)/../datarmnet-ext/mem
 ifeq ($(CONFIG_LOCALVERSION), "-gki-consolidate")
-include $(srctree)/../../vendor/qcom/opensource/dataipa/config/dataipa_GKI_consolidate.conf
-LINUXINCLUDE    += -include $(srctree)/../../vendor/qcom/opensource/dataipa/config/dataipa_debug.h
+include $(DATAIPA_VENDOR_ROOT)/config/dataipa_GKI_consolidate.conf
+LINUXINCLUDE    += -include $(DATAIPA_VENDOR_ROOT)/config/dataipa_debug.h
 endif
 endif
 
 ifeq ($(filter $(CONFIG_ARCH_KHAJE) $(CONFIG_ARCH_BLAIR) $(CONFIG_ARCH_HOLI) $(CONFIG_ARCH_MONACO), y), y)
-DATAIPADRVTOP = $(srctree)/../../vendor/qcom/opensource/dataipa/drivers/platform/msm
-LINUXINCLUDE    += -include $(srctree)/../../vendor/qcom/opensource/dataipa/config/dataipa_vendor_ipav4.h
-include $(srctree)/../../vendor/qcom/opensource/dataipa/config/dataipa_GKI_ipav4.conf
+DATAIPADRVTOP = $(DATAIPA_VENDOR_ROOT)/drivers/platform/msm
+LINUXINCLUDE    += -include $(DATAIPA_VENDOR_ROOT)/config/dataipa_vendor_ipav4.h
+include $(DATAIPA_VENDOR_ROOT)/config/dataipa_GKI_ipav4.conf
 ifeq ($(CONFIG_LOCALVERSION), "-gki-consolidate")
-include $(srctree)/../../vendor/qcom/opensource/dataipa/config/dataipa_GKI_consolidate.conf
-LINUXINCLUDE    += -include $(srctree)/../../vendor/qcom/opensource/dataipa/config/dataipa_debug.h
+include $(DATAIPA_VENDOR_ROOT)/config/dataipa_GKI_consolidate.conf
+LINUXINCLUDE    += -include $(DATAIPA_VENDOR_ROOT)/config/dataipa_debug.h
 endif
 endif
 

@@ -240,7 +240,7 @@ b5-touchscreen: b2-sensors-class b2-mmi-relay
 
 b5-goodix: b5-touchscreen b2-mmi-info
 	+$(MAKE) -C $(KERNEL_SRC) $(KBUILD_ARGS) M=drivers/input/touchscreen/goodix_berlin_mmi \
-	  CONFIG_DRM_PANEL_EVENT_NOTIFICATIONS=m CONFIG_INPUT_TOUCHSCREEN_MMI=m \
+	  CONFIG_DRM_PANEL_EVENT_NOTIFICATIONS=m CONFIG_INPUT_TOUCHSCREEN_MMI=m CONFIG_TOUCHSCREEN_GOODIX_BRL_SPI=y \
 	  'KBUILD_EXTRA_SYMBOLS=$(KERNEL_OUT)/drivers/mmi_info/Module.symvers $(KERNEL_OUT)/drivers/input/touchscreen/touchscreen_mmi/Module.symvers' modules
 
 b5-st21nfc: b2-mmi-info

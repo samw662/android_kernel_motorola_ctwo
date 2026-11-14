@@ -1,9 +1,22 @@
 # We can build either as part of a standalone Kernel build or as
 # an external module.  Determine which mechanism is being used
-ifeq ($(MODNAME),)
+ifeq ($(CONFIG_CTWO_WLAN_NATIVE),m)
+	KERNEL_BUILD := ctwo
+else ifeq ($(MODNAME),)
 	KERNEL_BUILD := y
 else
 	KERNEL_BUILD := n
+endif
+
+ifeq ($(KERNEL_BUILD), ctwo)
+	MODNAME := qca_cld3_kiwi_v2
+	DEVNAME := kiwi_v2
+	DYNAMIC_SINGLE_CHIP := kiwi_v2
+	BOARD_PLATFORM := pineapple
+	WLAN_ROOT := $(srctree)/vendor/qcom/opensource/wlan/qcacld-3.0
+	WLAN_PROFILE := pineapple_gki_kiwi-v2
+	ctwo_qca_cld_state := $(CONFIG_QCA_CLD_WLAN)
+	ctwo_cnss_utils_state := $(CONFIG_CNSS_UTILS)
 endif
 
 ifeq ($(KERNEL_BUILD), y)
@@ -47,6 +60,11 @@ endif
 endif
 
 include $(WLAN_ROOT)/configs/$(CONFIG_QCA_CLD_WLAN_PROFILE)_defconfig
+
+ifeq ($(KERNEL_BUILD), ctwo)
+	CONFIG_QCA_CLD_WLAN := $(ctwo_qca_cld_state)
+	CONFIG_CNSS_UTILS := $(ctwo_cnss_utils_state)
+endif
 
 # add configurations in WLAN_CFG_OVERRIDE
 $(foreach cfg, $(WLAN_CFG_OVERRIDE), \
@@ -5011,6 +5029,11 @@ else
 endif
 
 # Android wifi state control interface
+ifeq ($(BOARD_PLATFORM),pineapple)
+ifeq ($(MODNAME),qca_cld3_kiwi_v2)
+WLAN_CTRL_NAME ?= wlan
+endif
+endif
 ifneq ($(WLAN_CTRL_NAME),)
 ccflags-y += -DWLAN_CTRL_NAME=\"$(WLAN_CTRL_NAME)\"
 endif

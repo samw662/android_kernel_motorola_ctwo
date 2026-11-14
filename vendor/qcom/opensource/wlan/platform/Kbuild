@@ -1,3 +1,8 @@
+ifeq ($(CONFIG_CTWO_WLAN_NATIVE),m)
+WLAN_PLATFORM_ROOT := $(srctree)/vendor/qcom/opensource/wlan/platform
+export WLAN_PLATFORM_ROOT
+endif
+
 ifeq ($(CONFIG_CNSS_OUT_OF_TREE),y)
 KBUILD_CPPFLAGS += -DCONFIG_CNSS_OUT_OF_TREE
 endif
@@ -86,4 +91,8 @@ obj-$(CONFIG_CNSS2) += cnss2/
 obj-$(CONFIG_ICNSS2) += icnss2/
 obj-$(CONFIG_CNSS_GENL) += cnss_genl/
 obj-$(CONFIG_WCNSS_MEM_PRE_ALLOC) += cnss_prealloc/
+ifeq ($(CONFIG_CTWO_WLAN_NATIVE),m)
+obj-$(CONFIG_CNSS_UTILS) += cnss_utils/
+else
 obj-y += cnss_utils/
+endif

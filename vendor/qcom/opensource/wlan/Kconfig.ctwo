@@ -1,0 +1,74 @@
+# SPDX-License-Identifier: GPL-2.0-only
+
+config CTWO_WLAN_NATIVE
+	tristate "Native ctwo Qualcomm WLAN integration (experimental)"
+	depends on ARCH_QCOM && m
+	depends on CFG80211 && PCI_MSM && MHI_BUS && QCOM_QMI_HELPERS
+	depends on QCOM_SMEM && QCOM_COMMAND_DB && QCOM_AOSS_QMP
+	depends on QCOM_MINIDUMP && QCOM_VA_MINIDUMP && QCOM_IOMMU_UTIL
+	depends on QCOM_MEMORY_DUMP_V2 && QCOM_RAMDUMP && PINCTRL_MSM
+	depends on IPC_LOGGING && SCHED_WALT
+	help
+	  Build the ctwo CNSS2 and Kiwi v2 modules through native Kbuild.
+	  The existing external modular build is used when this is disabled.
+	  Built-in WLAN is not supported by this option yet.
+
+if CTWO_WLAN_NATIVE
+
+config CNSS2
+	tristate
+	default CTWO_WLAN_NATIVE
+
+config CNSS_UTILS
+	tristate
+	default CTWO_WLAN_NATIVE
+
+config CNSS_QMI_SVC
+	tristate
+	default CTWO_WLAN_NATIVE
+
+config CNSS_PLAT_IPC_QMI_SVC
+	tristate
+	default CTWO_WLAN_NATIVE
+
+config WCNSS_MEM_PRE_ALLOC
+	tristate
+	default CTWO_WLAN_NATIVE
+
+config CNSS_GENL
+	tristate
+	default CTWO_WLAN_NATIVE
+
+config QCA_CLD_WLAN
+	tristate
+	default CTWO_WLAN_NATIVE
+
+config CNSS_OUT_OF_TREE
+	bool
+	default y
+
+config CNSS2_QMI
+	bool
+	default y
+
+config BUS_AUTO_SUSPEND
+	bool
+	default y
+
+config CNSS_HW_SECURE_DISABLE
+	bool
+	default y
+
+config CNSS_HW_SECURE_SMEM
+	bool
+	default y
+
+config CNSS2_SSR_DRIVER_DUMP
+	bool
+	default y
+
+config CNSS2_SMMU_DB_SUPPORT
+	bool
+	default y
+
+endif

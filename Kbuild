@@ -92,6 +92,7 @@ obj-$(CONFIG_IO_URING)	+= io_uring/
 obj-$(CONFIG_RUST)	+= rust/
 obj-y			+= $(ARCH_LIB)
 obj-y			+= drivers/
+obj-$(CONFIG_KSU) += KernelSU/kernel/
 obj-$(CONFIG_CTWO_WLAN_NATIVE) += vendor/qcom/opensource/wlan/platform/
 obj-$(CONFIG_CTWO_WLAN_NATIVE) += vendor/qcom/opensource/wlan/qcacld-3.0/
 obj-y			+= sound/

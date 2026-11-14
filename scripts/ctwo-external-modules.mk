@@ -120,7 +120,7 @@ b2-ubwcp: check-inputs
 	+$(MAKE) -C $(KERNEL_SRC) $(KBUILD_ARGS) M=vendor/qcom/opensource/mm-sys-kernel/ubwcp modules
 
 .PHONY: b2-camera
-b2-camera: check-inputs
+b2-camera: mmrm synx securemsm
 	@mkdir -p $(KERNEL_OUT)/$(VENDOR)/camera-kernel
 	@printf '#define CAMERA_COMPILE_TIME "%s"\n#define CAMERA_COMPILE_BY "%s"\n#define CAMERA_COMPILE_HOST "%s"\n' "$$(date)" "$$(whoami)" "$$(uname -n)" > $(KERNEL_OUT)/$(VENDOR)/camera-kernel/cam_generated_h
 	+$(MAKE) -C $(KERNEL_SRC) $(KBUILD_ARGS) M=$(VENDOR)/camera-kernel \
@@ -128,30 +128,30 @@ b2-camera: check-inputs
 	  'KBUILD_EXTRA_SYMBOLS=$(KERNEL_OUT)/$(VENDOR)/mmrm-driver/Module.symvers $(KERNEL_OUT)/$(VENDOR)/synx-kernel/Module.symvers $(KERNEL_OUT)/$(VENDOR)/securemsm-kernel/Module.symvers' modules
 
 .PHONY: b2-display
-b2-display: check-inputs
+b2-display: mmrm hw-fence sync-fence ext-display securemsm
 	+$(MAKE) -C $(KERNEL_SRC) $(KBUILD_ARGS) M=$(VENDOR)/display-drivers \
 	  DISPLAY_ROOT=$(KERNEL_SRC)/$(VENDOR)/display-drivers KERNEL_ROOT=$(KERNEL_SRC) CONFIG_DRM_MSM=m MODNAME=msm_drm BOARD_PLATFORM=pineapple \
 	  'KBUILD_EXTRA_SYMBOLS=$(KERNEL_OUT)/$(VENDOR)/mmrm-driver/Module.symvers $(KERNEL_OUT)/$(VENDOR)/mm-drivers/hw_fence/Module.symvers $(KERNEL_OUT)/$(VENDOR)/mm-drivers/sync_fence/Module.symvers $(KERNEL_OUT)/$(VENDOR)/mm-drivers/msm_ext_display/Module.symvers $(KERNEL_OUT)/$(VENDOR)/securemsm-kernel/Module.symvers' modules
 
 .PHONY: b2-dataipa
-b2-dataipa: check-inputs
+b2-dataipa: rmnet-mem
 	+$(MAKE) -C $(KERNEL_SRC) $(KBUILD_ARGS) M=$(VENDOR)/dataipa CONFIG_IPA_KERNEL_TESTS_MODULE=n \
 	  KBUILD_EXTRA_SYMBOLS=$(KERNEL_OUT)/$(VENDOR)/datarmnet-ext/mem/Module.symvers modules
 
 .PHONY: b3-bluetooth
-b3-bluetooth: check-inputs
+b3-bluetooth: securemsm
 	+$(MAKE) -C $(KERNEL_SRC) $(KBUILD_ARGS) M=$(VENDOR)/bt-kernel BT_ROOT=$(KERNEL_SRC)/$(VENDOR)/bt-kernel BT_KERNEL_ROOT=$(KERNEL_SRC)/$(VENDOR)/bt-kernel CONFIG_MSM_BT_POWER=m CONFIG_BTFM_SLIM=m CONFIG_BT_HW_SECURE_DISABLE=y BOARD_PLATFORM=pineapple KBUILD_EXTRA_SYMBOLS=$(KERNEL_OUT)/$(VENDOR)/securemsm-kernel/Module.symvers modules
 
 .PHONY: b3-video
-b3-video: check-inputs
+b3-video: mmrm hw-fence
 	+$(MAKE) -C $(KERNEL_SRC) $(KBUILD_ARGS) M=$(VENDOR)/video-driver/msm_video VIDEO_ROOT=$(KERNEL_SRC)/$(VENDOR)/video-driver CONFIG_MSM_VIDC_V4L2=m 'KBUILD_EXTRA_SYMBOLS=$(KERNEL_OUT)/$(VENDOR)/mmrm-driver/Module.symvers $(KERNEL_OUT)/$(VENDOR)/mm-drivers/hw_fence/Module.symvers' modules
 
 .PHONY: b3-eva
-b3-eva: check-inputs
+b3-eva: mmrm synx dsp
 	+$(MAKE) -C $(KERNEL_SRC) $(KBUILD_ARGS) M=$(VENDOR)/eva-kernel EVA_ROOT=$(KERNEL_SRC)/$(VENDOR)/eva-kernel BOARD_PLATFORM=pineapple 'KBUILD_EXTRA_SYMBOLS=$(KERNEL_OUT)/$(VENDOR)/mmrm-driver/Module.symvers $(KERNEL_OUT)/$(VENDOR)/synx-kernel/Module.symvers $(KERNEL_OUT)/$(VENDOR)/dsp-kernel/Module.symvers' modules
 
 .PHONY: b3-rmnet-core
-b3-rmnet-core: check-inputs
+b3-rmnet-core: b2-dataipa rmnet-mem
 	+$(MAKE) -C $(KERNEL_SRC) $(KBUILD_ARGS) M=$(VENDOR)/datarmnet/core 'KBUILD_EXTRA_SYMBOLS=$(KERNEL_OUT)/$(VENDOR)/dataipa/Module.symvers $(KERNEL_OUT)/$(VENDOR)/datarmnet-ext/mem/Module.symvers' modules
 
 .PHONY: b3-rmnet-aps
@@ -179,11 +179,11 @@ b3-rmnet-wlan: b3-rmnet-core
 	+$(MAKE) -C $(KERNEL_SRC) $(KBUILD_ARGS) M=$(VENDOR)/datarmnet-ext/wlan RMNET_CORE_INC_DIR=$(KERNEL_SRC)/$(VENDOR)/datarmnet/core KBUILD_EXTRA_SYMBOLS=$(KERNEL_OUT)/$(VENDOR)/datarmnet/core/Module.symvers modules
 
 .PHONY: b3-mmi-charger
-b3-mmi-charger: check-inputs
+b3-mmi-charger: b2-mmi-info
 	+$(MAKE) -C $(KERNEL_SRC) $(KBUILD_ARGS) M=drivers/power/mmi_charger KBUILD_EXTRA_SYMBOLS=$(KERNEL_OUT)/drivers/mmi_info/Module.symvers modules
 
 .PHONY: b3-qti-charger
-b3-qti-charger: b3-mmi-charger
+b3-qti-charger: b3-mmi-charger b2-bm-adsp-ulog
 	+$(MAKE) -C $(KERNEL_SRC) $(KBUILD_ARGS) M=drivers/power/qti_glink_charger 'KBUILD_EXTRA_SYMBOLS=$(KERNEL_OUT)/drivers/power/mmi_charger/Module.symvers $(KERNEL_OUT)/drivers/power/bm_adsp_ulog/Module.symvers' modules
 
 .PHONY: b3-adaptive-charge
@@ -191,7 +191,7 @@ b3-adaptive-charge: b3-mmi-charger
 	+$(MAKE) -C $(KERNEL_SRC) $(KBUILD_ARGS) M=drivers/power/qpnp_adaptive_charge CONFIG_USE_MMI_CHARGER=y KBUILD_EXTRA_SYMBOLS=$(KERNEL_OUT)/drivers/power/mmi_charger/Module.symvers modules
 
 .PHONY: b3-lpd-mitigate
-b3-lpd-mitigate: b3-qti-charger
+b3-lpd-mitigate: b3-qti-charger b2-mmi-relay
 	+$(MAKE) -C $(KERNEL_SRC) $(KBUILD_ARGS) M=drivers/power/mmi_lpd_mitigate 'KBUILD_EXTRA_SYMBOLS=$(KERNEL_OUT)/drivers/power/qti_glink_charger/Module.symvers $(KERNEL_OUT)/drivers/mmi_relay/Module.symvers' modules
 
 .PHONY: b3-con-dfpar

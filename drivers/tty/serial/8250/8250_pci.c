@@ -1977,7 +1977,6 @@ pci_moxa_setup(struct serial_private *priv,
 #define PCI_DEVICE_ID_WCH_CH355_4S	0x7173
 #define PCI_VENDOR_ID_AGESTAR		0x5372
 #define PCI_DEVICE_ID_AGESTAR_9375	0x6872
-#define PCI_VENDOR_ID_ASIX		0x9710
 #define PCI_DEVICE_ID_BROADCOM_TRUMANAGE 0x160a
 #define PCI_DEVICE_ID_AMCC_ADDIDATA_APCI7800 0x818e
 
@@ -2773,7 +2772,7 @@ static struct pci_serial_quirk pci_serial_quirks[] = {
 	 * ASIX devices with FIFO bug
 	 */
 	{
-		.vendor		= PCI_VENDOR_ID_ASIX,
+		.vendor		= PCI_VENDOR_ID_NETMOS,
 		.device		= PCI_ANY_ID,
 		.subvendor	= PCI_ANY_ID,
 		.subdevice	= PCI_ANY_ID,

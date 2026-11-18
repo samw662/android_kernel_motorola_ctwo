@@ -1,0 +1,88 @@
+// SPDX-License-Identifier: GPL-2.0
+/*
+ * WearyStars - kernel identity easter egg.
+ * A /proc/wearystars panel showing kernel status live (freqs, governor,
+ * boost), plus a boot banner. Pure userland-visible, no side effects.
+ */
+
+#include <linux/module.h>
+#include <linux/kernel.h>
+#include <linux/proc_fs.h>
+#include <linux/seq_file.h>
+#include <linux/utsname.h>
+#include <linux/cpufreq.h>
+#include <linux/cpu.h>
+#include <linux/errno.h>
+
+static const char * const weary_banner[] = {
+	"W   W  EEEE  AAAA  RRRR   Y Y",
+	"W   W  E     A  A  R  R   Y Y",
+	"W W W  EEEE  AAAA  RRRR    Y",
+	"W W W  E     A  A  R  R    Y",
+	"W   W  EEEE  A  A  R   R   Y",
+	"",
+	"   kernel WearyStars - built with <3 by Samw662",
+	"",
+	"  ~ Telegram:           t.me/Samw662",
+	"  ~ Follow more:        t.me/WearySam",
+	"  ~ Join builds:        t.me/SamWearyBuilds",
+};
+
+static int weary_show(struct seq_file *m, void *v)
+{
+	int cpu;
+	size_t i;
+
+	for (i = 0; i < ARRAY_SIZE(weary_banner); i++)
+		seq_printf(m, "%s\n", weary_banner[i]);
+
+	seq_printf(m, "\n%s / %s / %d cores\n",
+		   utsname()->release, utsname()->machine,
+		   num_online_cpus());
+	seq_puts(m, "---- live status (touch the screen!) ----\n");
+
+	for_each_online_cpu(cpu) {
+		struct cpufreq_policy *policy;
+		unsigned int cur = cpufreq_quick_get(cpu);
+
+		policy = cpufreq_cpu_get(cpu);
+		if (!policy)
+			continue;
+		seq_printf(m, "cpu%d: %u kHz  gov=%s\n",
+			   cpu, cur ? cur : policy->cur,
+			   policy->governor ? policy->governor->name : "?");
+		cpufreq_cpu_put(policy);
+	}
+	return 0;
+}
+
+static int weary_open(struct inode *inode, struct file *file)
+{
+	return single_open(file, weary_show, NULL);
+}
+
+static const struct proc_ops weary_fops = {
+	.proc_open	= weary_open,
+	.proc_read	= seq_read,
+	.proc_lseek	= seq_lseek,
+	.proc_release	= single_release,
+};
+
+static int __init wearystars_init(void)
+{
+	size_t i;
+
+	if (!proc_create("wearystars", 0444, NULL, &weary_fops))
+		return -ENOMEM;
+
+	for (i = 0; i < ARRAY_SIZE(weary_banner); i++)
+		pr_info("WearyStars: %s\n", weary_banner[i]);
+	pr_info("WearyStars: %s/%s up, %d cores online\n",
+		utsname()->release, utsname()->machine, num_online_cpus());
+
+	return 0;
+}
+late_initcall(wearystars_init);
+
+MODULE_LICENSE("GPL");
+MODULE_DESCRIPTION("WearyStars kernel identity easter egg");

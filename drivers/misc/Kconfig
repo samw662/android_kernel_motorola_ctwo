@@ -513,6 +513,14 @@ config QSEECOM_PROXY
 	 These callback functions can be used to start, shutdown and
 	 send commands to the trusted apps.
 
+config WEARYSTARS
+	bool "WearyStars kernel identity panel"
+	depends on PROC_FS && CPU_FREQ
+	help
+	  Adds a read-only /proc/wearystars panel that shows the kernel
+	  identity banner plus the live frequency, governor and online status
+	  of each CPU. Purely informational, no side effects.
+
 source "drivers/misc/c2port/Kconfig"
 source "drivers/misc/eeprom/Kconfig"
 source "drivers/misc/cb710/Kconfig"

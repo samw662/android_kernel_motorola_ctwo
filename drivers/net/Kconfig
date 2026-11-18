@@ -192,9 +192,10 @@ config MACVTAP
 	  will be called macvtap.
 
 config IPVLAN_L3S
+	bool "IP-VLAN L3S support"
 	depends on NETFILTER
 	depends on IPVLAN
-	def_bool y
+	default y
 	select NET_L3_MASTER_DEV
 
 config IPVLAN
